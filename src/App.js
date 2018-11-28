@@ -18,7 +18,8 @@ class App extends Component {
   }
 
   Get() {
-    fetch('http://localhost:5000/api/ninjas', {
+    // fetch('http://localhost:5000/api/ninjas', {
+      fetch('https://restapiboilerplate.herokuapp.com/api/ninjas', {
       method: "GET"
     }).then(function (response) {
       return response.json();
@@ -35,7 +36,7 @@ class App extends Component {
       name: `${name}`,
       rank: `${rank}`
     }
-    fetch('http://localhost:5000/api/ninjas', {
+    fetch('https://restapiboilerplate.herokuapp.com/api/ninjas', {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -54,7 +55,7 @@ class App extends Component {
     this.setState({
       data:array
     })
-    fetch(`http://localhost:5000/api/ninjas/${id}`, {
+    fetch(`https://restapiboilerplate.herokuapp.com/api/ninjas/${id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -75,7 +76,7 @@ class App extends Component {
       name: `${names}`,
       rank: `${ranks}`
     }
-    fetch(`http://localhost:5000/api/ninjas/${ids}`, {
+    fetch(`https://restapiboilerplate.herokuapp.com/api/ninjas/${ids}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -110,7 +111,6 @@ class App extends Component {
                 <th>Name</th>
                 <th>Rank</th>
                 <th>Changes</th>
-                {/* <th>Available</th> */}
               </tr>
             </thead>
             <tbody>
@@ -126,7 +126,6 @@ class App extends Component {
                         <button onClick={() => this.Delete(data._id,i)}>Delete</button>
                         <button onClick={() => this.Update(this.state.name, this.state.rank, this.state.ID,i)}>Update</button>
                       </td>
-                      {/* <td>{data.available}</td> */}
                     </tr>
                   )
                 })
