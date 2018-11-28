@@ -19,14 +19,14 @@ class App extends Component {
 
   Get() {
     // fetch('http://localhost:5000/api/ninjas', {
-      fetch('https://restapiboilerplate.herokuapp.com/api/ninjas', {
+    fetch('https://restapiboilerplate.herokuapp.com/api/ninjas', {
       method: "GET"
     }).then(function (response) {
       return response.json();
     }).then(data => {
       this.setState({
-          data: data
-        })
+        data: data
+      })
     }
     ).catch(error => alert(error));
   }
@@ -45,15 +45,15 @@ class App extends Component {
     }).then(function (response) {
       return response.json();
     }).then(data => console.log("Added")
-    ).catch(error => alert(error));
+    ).catch(error => console.log(error));
   }
 
-  Delete(id,index) {
+  Delete(id, index) {
     console.log(id)
-    let array=[...this.state.data];
-    array.splice(index,1)
+    let array = [...this.state.data];
+    array.splice(index, 1)
     this.setState({
-      data:array
+      data: array
     })
     fetch(`https://restapiboilerplate.herokuapp.com/api/ninjas/${id}`, {
       method: "DELETE",
@@ -66,12 +66,7 @@ class App extends Component {
     ).catch(error => alert(error));
   }
 
-  Update(names, ranks, ids,index) {
-
-    // this.setState({
-    //   name:this.state.data[index].name,
-    // })
-    console.log(this.state.data)
+  Update(names, ranks, ids, index) {
     let payload = {
       name: `${names}`,
       rank: `${ranks}`
@@ -81,11 +76,11 @@ class App extends Component {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(payload)
+      body:JSON.stringify(payload)
     }).then(function (response) {
       return response.json();
     }).then(data => console.log("UPDATED")
-    ).catch(error => alert(error));
+    ).catch(error =>{ console.log(error)});
   }
 
   handleChange(e) {
@@ -95,7 +90,7 @@ class App extends Component {
   componentWillMount() {
     this.Get()
   }
-  UNSAFE_componentDidUpdate(nextProps, nextState){
+  UNSAFE_componentDidUpdate(nextProps, nextState) {
     this.Get()
   }
 
@@ -123,8 +118,8 @@ class App extends Component {
                       <td>{data.name}</td>
                       <td>{data.rank}</td>
                       <td>
-                        <button onClick={() => this.Delete(data._id,i)}>Delete</button>
-                        <button onClick={() => this.Update(this.state.name, this.state.rank, this.state.ID,i)}>Update</button>
+                        <button onClick={() => this.Delete(data._id, i)}>Delete</button>
+                        <button onClick={(e) =>{ e.preventDefault();this.Update(this.state.name, this.state.rank,data._id, i) } }>Update</button>
                       </td>
                     </tr>
                   )
@@ -136,8 +131,8 @@ class App extends Component {
         <Row>
           <Col md={4}></Col>
           <Col md={4}>
-
-            <form onSubmit={() => this.Create(this.state.name, this.state.rank)}>
+            <form>
+            {/* <form onSubmit={() => this.Create(this.state.name, this.state.rank)}> */}
               <label htmlFor="formBasicText">Name</label>
               <FormGroup
                 controlId="formBasicText"
@@ -167,7 +162,7 @@ class App extends Component {
                 <FormControl.Feedback />
                 <HelpBlock>Validation is based on string length.</HelpBlock>
               </FormGroup>
-              <button type="Submit">Create</button>
+              <button type="Submit" onClick={(e) => {e.preventDefault(); this.Create(this.state.name, this.state.rank)}}>Create</button>
             </form>
 
           </Col>
