@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Col, Row, FormGroup, FormControl, HelpBlock, Table } from 'react-bootstrap';
 import './App.css';
+import { Appaction } from "./store/actions/appactions";
+import { connect } from 'react-redux'
 
 class App extends Component {
   constructor(props, context) {
@@ -48,23 +50,23 @@ class App extends Component {
     ).catch(error => console.log(error));
   }
 
-  Delete(id, index) {
-    console.log(id)
-    let array = [...this.state.data];
-    array.splice(index, 1)
-    this.setState({
-      data: array
-    })
-    fetch(`https://restapiboilerplate.herokuapp.com/api/ninjas/${id}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }).then(function (response) {
-      return response.json();
-    }).then(data => console.log("Deleted")
-    ).catch(error => alert(error));
-  }
+  // Delete(id, index) {
+  //   console.log(id)
+  //   let array = [...this.state.data];
+  //   array.splice(index, 1)
+  //   this.setState({
+  //     data: array
+  //   })
+  //   fetch(`https://restapiboilerplate.herokuapp.com/api/ninjas/${id}`, {
+  //     method: "DELETE",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //   }).then(function (response) {
+  //     return response.json();
+  //   }).then(data => console.log("Deleted")
+  //   ).catch(error => alert(error));
+  // }
 
   Update(names, ranks, ids, index) {
     let payload = {
@@ -76,11 +78,11 @@ class App extends Component {
       headers: {
         "Content-Type": "application/json",
       },
-      body:JSON.stringify(payload)
+      body: JSON.stringify(payload)
     }).then(function (response) {
       return response.json();
     }).then(data => console.log("UPDATED")
-    ).catch(error =>{ console.log(error)});
+    ).catch(error => { console.log(error) });
   }
 
   handleChange(e) {
@@ -93,7 +95,22 @@ class App extends Component {
   UNSAFE_componentDidUpdate(nextProps, nextState) {
     this.Get()
   }
-
+  handleDelete(id) {
+    let data = this.state.data;
+    let newArray = data.filter((data) => data._id !== id);
+    this.setState({ data: newArray }, () => {
+      this.props.deleteTodo(id)
+    })
+  }
+  handleUpdate(name, rank, id, index) {
+    let todo = {
+      names: name,
+      ranks: rank,
+      ids: id,
+      indexs: index
+    }
+    this.props.updateTodo(todo)
+  }
   render() {
     return (
       <div className="App">
@@ -118,8 +135,9 @@ class App extends Component {
                       <td>{data.name}</td>
                       <td>{data.rank}</td>
                       <td>
-                        <button onClick={() => this.Delete(data._id, i)}>Delete</button>
-                        <button onClick={(e) =>{ e.preventDefault();this.Update(this.state.name, this.state.rank,data._id, i) } }>Update</button>
+                        {/*  this.Delete(data._id, i)} */}
+                        <button onClick={this.handleDelete.bind(this, data._id)}>Delete</button>
+                        <button onClick={(e) => { e.preventDefault(); this.handleUpdate(this.state.name, this.state.rank, data._id, i) }}>Update</button>
                       </td>
                     </tr>
                   )
@@ -132,7 +150,7 @@ class App extends Component {
           <Col md={4}></Col>
           <Col md={4}>
             <form>
-            {/* <form onSubmit={() => this.Create(this.state.name, this.state.rank)}> */}
+              {/* <form onSubmit={() => this.Create(this.state.name, this.state.rank)}> */}
               <label htmlFor="formBasicText">Name</label>
               <FormGroup
                 controlId="formBasicText"
@@ -162,18 +180,32 @@ class App extends Component {
                 <FormControl.Feedback />
                 <HelpBlock>Validation is based on string length.</HelpBlock>
               </FormGroup>
-              <button type="Submit" onClick={(e) => {e.preventDefault(); this.Create(this.state.name, this.state.rank)}}>Create</button>
+              <button type="Submit" onClick={(e) => { e.preventDefault(); this.Create(this.state.name, this.state.rank) }}>Create</button>
             </form>
 
           </Col>
           <Col md={4}></Col>
         </Row>
         <input type="text" value={this.state.ID} name="ID" onChange={this.handleChange} />
-        <button onClick={() => this.Delete(this.state.ID)}>Delete</button>
+        <button onClick={() => this.props.deleteTodo(this.state.ID)}>Delete</button>
         <button onClick={() => this.Update(this.state.name, this.state.rank, this.state.ID)}>Update</button>
       </div>
     );
   }
 }
 
-export default App;
+
+
+const mapStateToProps = (state) => {
+  return {
+    data: state.data,
+    success: state.success && state.success
+  }
+}
+const mapDispatchToProps = (dispatch) => {
+  return {
+    deleteTodo: (id) => { dispatch(Appaction.deleteTodo(id)) },
+    updateTodo: (todo) => { dispatch(Appaction.updateTodo(todo)) }
+  }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(App);
