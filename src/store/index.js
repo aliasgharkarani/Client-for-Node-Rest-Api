@@ -4,7 +4,8 @@ import { combineEpics,createEpicMiddleware } from "redux-observable";
 import RootEpic from "./epic";
 const epics = combineEpics(
     RootEpic.deleteTodo,
-    RootEpic.updateTodo
+    RootEpic.updateTodo,
+    RootEpic.addTodo    
 );
 const rootEpic=createEpicMiddleware(epics)
 export const store = createStore(rootReducer, applyMiddleware(rootEpic));

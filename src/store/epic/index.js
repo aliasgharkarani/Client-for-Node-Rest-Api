@@ -41,7 +41,6 @@ export default class RootEpic {
                     name:payload.names,
                     rank:payload.ranks
                 }
-                console.log(payload.ids)
                 return HttpService.put(`https://restapiboilerplate.herokuapp.com/api/ninjas/${payload.ids}`,newPayload)
                     .pipe(
                         map(res => {
@@ -54,6 +53,29 @@ export default class RootEpic {
                             alert("error")
                             return Observable.of({
                                 type: Appaction.UPDATE_TODO_FAIL
+                            });
+                        })
+                    )
+
+            })
+        );
+    };
+    static addTodo = action$ => {
+        return action$.pipe(
+            ofType(Appaction.ADD_TODO),
+            switchMap(({ payload }) => {
+                return HttpService.post('https://restapiboilerplate.herokuapp.com/api/ninjas',payload)
+                    .pipe(
+                        map(res => {
+                            return {
+                                type: Appaction.ADD_TODO_SUCCESS,
+                                payload: res.response
+                            };
+                        }),
+                        catchError(a => {
+                            alert("error")
+                            return Observable.of({
+                                type: Appaction.ADD_TODO_FAIL
                             });
                         })
                     )

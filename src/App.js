@@ -9,7 +9,7 @@ class App extends Component {
     super(props, context);
 
     this.handleChange = this.handleChange.bind(this);
-    this.Create = this.Create.bind(this);
+    // this.Create = this.Create.bind(this);
 
     this.state = {
       name: 'Ali',
@@ -33,22 +33,22 @@ class App extends Component {
     ).catch(error => alert(error));
   }
 
-  Create(name, rank) {
-    let payload = {
-      name: `${name}`,
-      rank: `${rank}`
-    }
-    fetch('https://restapiboilerplate.herokuapp.com/api/ninjas', {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload)
-    }).then(function (response) {
-      return response.json();
-    }).then(data => console.log("Added")
-    ).catch(error => console.log(error));
-  }
+  // Create(name, rank) {
+  //   let payload = {
+  //     name: `${name}`,
+  //     rank: `${rank}`
+  //   }
+  //   fetch('https://restapiboilerplate.herokuapp.com/api/ninjas', {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify(payload)
+  //   }).then(function (response) {
+  //     return response.json();
+  //   }).then(data => console.log("Added")
+  //   ).catch(error => console.log(error));
+  // }
 
   // Delete(id, index) {
   //   console.log(id)
@@ -68,22 +68,22 @@ class App extends Component {
   //   ).catch(error => alert(error));
   // }
 
-  Update(names, ranks, ids, index) {
-    let payload = {
-      name: `${names}`,
-      rank: `${ranks}`
-    }
-    fetch(`https://restapiboilerplate.herokuapp.com/api/ninjas/${ids}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload)
-    }).then(function (response) {
-      return response.json();
-    }).then(data => console.log("UPDATED")
-    ).catch(error => { console.log(error) });
-  }
+  // Update(names, ranks, ids, index) {
+  //   let payload = {
+  //     name: `${names}`,
+  //     rank: `${ranks}`
+  //   }
+  //   fetch(`https://restapiboilerplate.herokuapp.com/api/ninjas/${ids}`, {
+  //     method: "PUT",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify(payload)
+  //   }).then(function (response) {
+  //     return response.json();
+  //   }).then(data => console.log("UPDATED")
+  //   ).catch(error => { console.log(error) });
+  // }
 
   handleChange(e) {
     this.setState({ [e.target.name]: e.target.value });
@@ -94,6 +94,13 @@ class App extends Component {
   }
   UNSAFE_componentDidUpdate(nextProps, nextState) {
     this.Get()
+  }
+  handleCreate(names, ranks) {
+    let todo = {
+      name: names,
+      rank: ranks
+    }
+    this.props.addTodo(todo)
   }
   handleDelete(id) {
     let data = this.state.data;
@@ -179,8 +186,8 @@ class App extends Component {
                 />
                 <FormControl.Feedback />
                 <HelpBlock>Validation is based on string length.</HelpBlock>
-              </FormGroup>
-              <button type="Submit" onClick={(e) => { e.preventDefault(); this.Create(this.state.name, this.state.rank) }}>Create</button>
+              </FormGroup>                                                   
+              <button type="Submit" onClick={(e) => { e.preventDefault(); this.handleCreate(this.state.name, this.state.rank) }}>Create</button>
             </form>
 
           </Col>
@@ -204,6 +211,7 @@ const mapStateToProps = (state) => {
 }
 const mapDispatchToProps = (dispatch) => {
   return {
+    addTodo: (todo) => { dispatch(Appaction.addTodo(todo)) },
     deleteTodo: (id) => { dispatch(Appaction.deleteTodo(id)) },
     updateTodo: (todo) => { dispatch(Appaction.updateTodo(todo)) }
   }

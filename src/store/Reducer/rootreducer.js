@@ -17,6 +17,12 @@ const rootReducer = (state = initialState, action) => {
             return Object.assign({}, state, { success: true })
         case Appaction.UPDATE_TODO_FAIL:
             return Object.assign({}, state, { success: false })
+        case Appaction.ADD_TODO:
+            return state;
+        case Appaction.ADD_TODO_SUCCESS:
+            return Object.assign({}, state, { success: true })
+        case Appaction.ADD_TODO_FAIL:
+            return Object.assign({}, state, { success: false })
         default:
             return state
     }
